@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Vishruth M S — Portfolio</title>
+	<meta name="description" content="Portfolio site showcasing projects, skills, and experience." />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/styles.css" />
+	<style>
+		/* Design tokens */
+		:root{
+			--bg:#ffffff;
+			--text:#0f172a;
+			--muted:#f1f5f9;
+			--card:#ffffff;
+			--border:rgba(15,23,42,0.08);
+			--primary:#2563eb;
+			--primary-contrast:#ffffff;
+			--accent:#22d3ee;
+			--shadow:0 12px 30px -16px rgba(2,6,23,.25);
+			--header-bg:rgba(255,255,255,.7);
+			--chip-bg:#eef2ff;
+			--chip-text:#1e293b;
+			--badges-bg:#181818; /* keep blackish as requested */
+			--badges-chip-bg:#222;
+			--badges-chip-text:#fff;
+		}
+		[data-theme="dark"]{
+			--bg:#0b1220;
+			--text:#e5e7eb;
+			--muted:#0f172a;
+			--card:#0e1627;
+			--border:rgba(148,163,184,0.12);
+			--primary:#60a5fa;
+			--primary-contrast:#0b1220;
+			--accent:#22d3ee;
+			--shadow:0 16px 40px -18px rgba(0,0,0,.55);
+			--header-bg:rgba(11,18,32,.6);
+			--chip-bg:#1f2937;
+			--chip-text:#e5e7eb;
+			--badges-bg:#0b0f19;
+			--badges-chip-bg:#111827;
+			--badges-chip-text:#e5e7eb;
+		}
+
+		/* Base */
+		html,body{background:var(--bg);color:var(--text);}
+		.section.muted{background:var(--muted);}
+		.card{
+			background:var(--card);
+			border:1px solid var(--border);
+			border-radius:16px;
+			box-shadow:var(--shadow);
+			transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+		}
+		.card.lift:hover{transform:translateY(-2px); box-shadow:0 18px 50px -20px rgba(2,6,23,.35);}
+		.tags li, .chip{
+			background:var(--chip-bg);
+			color:var(--chip-text);
+			border-radius:999px;
+			padding:.35rem .7rem;
+			font-size:.85rem;
+		}
+
+		/* Header */
+		.site-header{
+			position:sticky; top:0; z-index:50;
+			backdrop-filter:saturate(180%) blur(10px);
+			background:var(--header-bg);
+			border-bottom:1px solid var(--border);
+		}
+		.menu .nav-link{padding:.5rem .75rem; border-radius:999px; transition:background .2s,color .2s;}
+		.menu .nav-link:hover{background: color-mix(in srgb, var(--primary) 15%, transparent);}
+		.menu .nav-link.active{background:var(--primary); color:var(--primary-contrast);}
+
+		/* Buttons */
+		.btn{
+			background:linear-gradient(135deg, var(--primary), #7c3aed 60%);
+			color:var(--primary-contrast);
+			border:none; border-radius:12px;
+			padding:.7rem 1rem; font-weight:600;
+			box-shadow:0 10px 20px -12px rgba(37,99,235,.6);
+			transition:transform .12s ease, box-shadow .12s ease, opacity .2s ease;
+		}
+		.btn:hover{transform:translateY(-1px); box-shadow:0 14px 28px -14px rgba(37,99,235,.7);}
+		.btn:active{transform:translateY(0);}
+		.btn-outline{
+			background:transparent;
+			color:var(--text);
+			border:1px solid var(--border);
+			box-shadow:none;
+		}
+		.btn-outline:hover{border-color:var(--primary); color:var(--primary);}
+
+		/* Hero accent underline */
+		.underline{box-shadow:inset 0 -0.35em rgba(34,211,238,.3);}
+
+		/* Timeline */
+		.timeline{position:relative;}
+		.timeline::before{
+			content:""; position:absolute; left:10px; top:0; bottom:0;
+			width:2px; background:var(--border);
+		}
+		.timeline > li{position:relative; padding-left:2rem; margin:1.2rem 0;}
+		.timeline > li .time{
+			font-size:.85rem; opacity:.8; margin-bottom:.35rem;
+		}
+		.timeline > li::marker{content:"";}
+		.timeline > li::after{
+			content:""; position:absolute; left:2px; top:.35rem; width:16px; height:16px;
+			border-radius:50%; background:var(--bg); border:3px solid var(--primary);
+			box-shadow:0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+		}
+
+		/* Badges block (kept blackish) */
+		.badges{
+			background:var(--badges-bg);
+			padding:.75em 1em; border-radius:.75em;
+			display:flex; flex-wrap:wrap; gap:.5em; margin-top:1em;
+		}
+		.badges .chip{
+			background:var(--badges-chip-bg);
+			color:var(--badges-chip-text);
+			border:none; box-shadow:0 1px 4px rgba(0,0,0,0.08);
+		}
+
+		/* Theme toggle */
+		.theme-toggle{
+			appearance:none; border:1px solid var(--border);
+			background:var(--card); color:var(--text);
+			width:40px; height:40px; border-radius:999px;
+			display:inline-grid; place-items:center; margin-left:.5rem;
+			cursor:pointer; transition:background .2s,border-color .2s,transform .12s;
+		}
+		.theme-toggle:hover{transform:translateY(-1px);}
+		.theme-toggle svg{width:18px;height:18px}
+		.theme-toggle .sun{display:inline}
+		.theme-toggle .moon{display:none}
+		[data-theme="dark"] .theme-toggle .sun{display:none}
+		[data-theme="dark"] .theme-toggle .moon{display:inline}
+
+		/* Links and accents respond to theme */
+		a{ color: var(--primary); text-decoration: none; }
+		a:hover{ text-decoration: underline; }
+		.accent{ color: var(--primary); }
+
+		/* Improve nav hover to work in both themes */
+		.menu .nav-link:hover{
+			background: color-mix(in srgb, var(--primary) 15%, transparent);
+		}
+
+		/* Quote accent */
+		.quote{ color: color-mix(in srgb, var(--accent) 80%, var(--text) 20%); opacity:.9; }
+
+		/* Themed Education summary card (replaces inline styles) */
+		.education-summary{
+			background: var(--card);
+			color: var(--text);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			margin: 1.5em 0;
+			padding: 1.1em 1.25em;
+			box-shadow: var(--shadow);
+		}
+		.education-summary h3{
+			margin-top: 0;
+			color: var(--primary);
+			font-weight: 600;
+		}
+
+		/* Print styles to render a clean PDF */
+		@media print {
+			:root, [data-theme="dark"]{
+				--bg:#ffffff; --text:#111827; --card:#ffffff; --border:#e5e7eb;
+				--muted:#ffffff; --primary:#111827; --primary-contrast:#ffffff; --header-bg:transparent;
+			}
+			.site-header, .site-footer .socials, .nav-toggle, .theme-toggle, .btn { display:none !important; }
+			.card{ box-shadow:none !important; }
+			a{ color:#111827; text-decoration:none; }
+			.section.muted{ background:#ffffff; }
+		}
+	</style>
+</head>
+<body>
+	<a class="skip-link" href="#main">Skip to content</a>
+
+	<header class="site-header" id="top">
+		<div class="container header-inner">
+			<a class="brand" href="#top" aria-label="Go to top">
+				<span class="brand-mark">AA</span>
+				<span class="brand-text">A Aditi</span>
+			</a>
+
+			<nav class="site-nav" aria-label="Primary">
+				<button class="nav-toggle" aria-expanded="false" aria-controls="primary-menu">
+					<span class="bar"></span><span class="bar"></span><span class="bar"></span>
+					<span class="sr-only">Menu</span>
+				</button>
+				<ul id="primary-menu" class="menu">
+					<li><a class="nav-link" href="#about" data-section="about">About</a></li>
+					<li><a class="nav-link" href="#education" data-section="education">Education</a></li>
+					<li><a class="nav-link" href="#career_aspirations" data-section="career_aspirations">Career Aspirations</a></li>
+					<li><a class="nav-link" href="#enrichment" data-section="enrichment">Enrichment Activities</a></li>
+					<li><a class="nav-link" href="#contact" data-section="contact">Contact</a></li>
+				</ul>
+			</nav>
+
+			<!-- Add PDF download link (generated via the script below) -->
+			<a
+				class="btn small hide-sm"
+				href="assets/Aditi-Portfolio.pdf"
+				download="Aditi-Portfolio.pdf"
+				aria-label="Download site PDF"
+				title="Download site PDF"
+			>Download CV
+		</a>
+		</div>
+	</header>
+
+	<main id="main">
+		<section class="hero">
+			<div class="container hero-inner">
+				<div class="hero-copy">
+					<!--p class="eyebrow">Portfolio</p-->
+					<h1 class="headline">Hi, I’m <span class="accent">A Aditi</span><br /><span class="underline">An ACCA Aspirant</span></h1>
+					<!--p class="subhead">I build robust, accessible, and scalable web apps. I love clean architecture, great UX, and shipping fast.</p-->
+					<div class="cta">
+						<a class="btn" href="#contact">Let’s work together</a>
+						<!--a class="btn btn-ghost" href="#projects">See my projects</a-->
+					</div>
+					<!--ul class="quick-stats">
+						<li><strong>5+ yrs</strong><span>Experience</span></li>
+						<li><strong>20+</strong><span>Projects</span></li>
+						<li><strong>10</strong><span>Clients</span></li>
+					</ul-->
+				</div>
+				<!--div class="hero-media">
+					<img
+		src="https://raw.githubusercontent.com/your-username/your-repo/main/public/me.jpg"
+		alt="Portrait of Vishruth M S"
+		class="portrait"
+	/>
+				</div-->
+			</div>
+			<div class="hero-bg"></div>
+		</section>
+
+		<section id="about" class="section">
+	<div class="container grid-2">
+		<div class="about-media card lift">
+			<img
+				src="https://raw.githubusercontent.com/Aditimakam234/MY_PHOTOS/main/Aditi%20photo.jpg"
+				alt="Aditi working at a desk"
+			/>
+		</div>
+		<div class="about-copy about-highlight card">
+			<h2>About Me</h2>
+			<p class="about-main">
+				As a driven finance enthusiast currently pursuing a Bachelor of Commerce (Honours) with a specialization in Finance, Accounting, Auditing, and Taxation at Jain (Deemed-to-be University), I bring a strong academic foundation and practical experience to the table. My internship at Ganapath Raj & Co. sharpened my skills in auditing, data verification, and financial tools like Excel and Tally. I have hands-on experience building financial models and conducting valuations for major Indian companies using advanced tools and techniques. In addition to my technical strengths, I’ve honed my leadership and public speaking skills as Vice President Education of my university’s Toastmasters Club. I am passionate about investment banking and financial research. I pride myself on being systematic, detail-oriented, and adaptable, with strong communication skills that help me collaborate effectively and present ideas with clarity. 
+			</p>
+			<div class="badges">
+				<span class="chip">Excel</span>
+				<span class="chip">Tally</span>
+				<span class="chip">Financial Analysis</span>
+				<span class="chip">Leadership</span>
+				<span class="chip">Teamwork</span>
+				<span class="chip">Adaptability</span>
+				<span class="chip">Problem-solving</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+		<section id="education" class="section muted">
+			<div class="container">
+				<h2>Education</h2>
+				<div class="education-highlight card acca-journey">
+			<h3>Toastmasters Journey</h3>
+			<ol class="timeline education-timeline">
+				<li>
+					<div class="time">April 2023 – June 2024</div>
+					<div class="entry card">
+						<h4>Member</h4>
+						<p>
+							As a member of Toastmasters International, I, A. Aditi, had the opportunity to take on various leadership and communication roles, including delivering prepared speeches, participating in impromptu speaking sessions, and taking up meeting roles such as Timer, Ah-Counter, and Grammarian. Through these experiences, I developed greater confidence in public speaking, honed my ability to think on my feet, improved my listening skills, and learned the importance of constructive feedback and mentorship. My journey at Toastmasters has been instrumental in enhancing both my personal and professional communication abilities.
+						</p>
+					</div>
+				</li>
+				<li>
+					<div class="time">Jan 2024 – June 2024</div>
+					<div class="entry card">
+						<h4>Vice President Education</h4>
+						<p>
+							As Vice President Education for one term (6 months), I was responsible for overseeing the club’s educational programs, planning and managing meeting agendas, and supporting members in achieving their communication and leadership goals. This experience allowed me to strengthen my leadership, organizational, and mentoring skills, while fostering a culture of continuous learning and development within the club.
+						</p>
+					</div>
+				</li>
+			</ol>
+			<div class="badges">
+				<span class="chip">Public Speaking</span>
+				<span class="chip">Event Planning</span>
+				<span class="chip">Leadership</span>
+				<span class="chip">Personal Development</span>
+				<span class="chip">Speech Writing</span>
+			</div>
+		</div>
+				<ol class="timeline education-timeline">
+					<li>
+						<div class="time">2022 — Present</div>
+						<div class="entry card">
+							<h3>Bachelor of Commerce (B.Com) with Honours</h3>
+							<p>Jain University, Bangalore<br />Specialization: Finance, Accounting & Taxation</p>
+							<!--ul class="tags"><li>Graduated with Distinction</li></ul-->
+						</div>
+					</li>
+				</ol>
+				<!-- Replace inline-styled summary with themed version -->
+		<div class="education-summary card">
+			<h3>Education</h3>
+			<p>
+				I am currently pursuing a Bachelor of Commerce (Honours) with a specialisation in Finance, Auditing, Accounting, and Taxation (2022 – present). This academic journey has strengthened my analytical, problem-solving, and numerical skills while deepening my understanding of financial systems, auditing practices, corporate accounting, and tax regulations. Through a combination of theoretical learning and practical exposure, I am building a strong foundation to excel in the dynamic fields of finance and business.
+			</p>
+		</div>
+			</div>
+		</section>
+
+		<section id="career_aspirations" class="section aspirations">
+	<div class="container">
+		<h2>Career Aspirations</h2>
+		<div class="aspire-card card">
+			<p>
+				My career aspirations lie at the intersection of Finance, Audit, and Investment Banking, driven by a desire to combine analytical expertise with strategic thinking to create lasting impact in the business world. In Finance, I aim to deepen my understanding of financial management, capital markets, and corporate valuation, equipping myself to make informed, data-driven decisions that drive growth and sustainability. In the field of Audit, I aspire to uphold the highest standards of accuracy, compliance, and transparency, ensuring that organisations not only meet regulatory requirements but also maintain ethical and responsible business practices.
+			</p>
+			<p>
+				As for Investment Banking, I am drawn to the fast-paced, high-stakes environment where complex deals, mergers, and capital-raising opportunities shape the future of companies and industries. My goal is to leverage my skills in analysis, risk assessment, and strategic planning to contribute to transactions that deliver measurable value for clients and stakeholders alike.
+			</p>
+		</div>
+	</div>
+</section>
+
+		<section id="enrichment" class="section muted enrichment">
+	<div class="container">
+		<h2>Enrichment Activities</h2>
+		<div class="enrichment-grid">
+			<article class="card enrich-card mythology">
+				<div class="media">
+					<img src="https://c.wallhere.com/photos/6b/63/fantasy_art_artwork-102637.jpg!d" alt="Ancient mythology book and artifacts" loading="lazy" width="600" height="400" />
+				</div>
+				<div class="body">
+					<h3>Mythology Enthusiast</h3>
+					<p>I have a deep fascination for mythological narratives, often exploring timeless epics, ancient folklore, and cultural legends that shape human history. Whether through books or captivating documentaries, I enjoy uncovering the stories, symbolism, and wisdom behind these traditions — a true journey through time.</p>
+				</div>
+			</article>
+			<article class="card enrich-card doodle-nail">
+				<div class="media">
+					<img src="https://www.prettysweetprintables.com/wp-content/uploads/2023/06/School-Notebook-Nails.jpg" alt="Doodle sketch and nail art" loading="lazy" width="600" height="400" />
+				</div>
+				<div class="body">
+					<h3>Doodling and Nail Art</h3>
+					<p>From spontaneous doodles to intricate nail artistry, I find joy in blending creativity with design precision. My work often reflects a playful mix of colors, patterns, and textures, turning everyday ideas into visual statements — where imagination meets aesthetics.</p>
+				</div>
+			</article>
+			<article class="card enrich-card cooking">
+				<div class="media">
+					<img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=600&q=80" alt="Cooking diverse cuisines" loading="lazy" width="600" height="400" />
+				</div>
+				<div class="body">
+					<h3>Cooking Diverse Cuisines</h3>
+					<p>I love experimenting with global cuisines, combining flavors, techniques, and traditions to create dishes that tell their own stories. For me, cooking is more than a skill — it’s an adventure of taste, culture, and connection, always served with a dash of creativity.</p>
+				</div>
+			</article>
+		</div>
+	</div>
+</section>
+
+		<section id="contact" class="section">
+			<div class="container grid-2">
+				<div>
+					<h2>Contact</h2>
+					<p>Have a project in mind? Let’s talk.</p>
+					<ul class="contact-list">
+						<li>
+							<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12.713l11.985-9.713H.015L12 12.713zm0 2.574L0 5.25v13.5h24V5.25L12 15.287z"/></svg>
+							<a href="mailto:vishrock35@gmail.com">aditimakamxoxo@gmail.com</a>
+						</li>
+						<li>
+							<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.72 11.72 0 003.67.59 1 1 0 011 1V20a1 1 0 01-1 1C10.3 21 3 13.7 3 4a1 1 0 011-1h2.47a1 1 0 011 1 11.72 11.72 0 00.59 3.67 1 1 0 01-.24 1.01l-2.2 2.11z"/></svg>
+							<a href="tel:+10000000000">+91 8722038715</a>
+						</li>
+					</ul>
+					<div class="socials">
+						<a href="https://www.linkedin.com/in/a-aditi-b2a9b4248?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" aria-label="LinkedIn profile of A Aditi" target="_blank" rel="me noopener noreferrer" title="LinkedIn">
+							<!-- LinkedIn icon -->
+							<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path fill="currentColor" d="M19 3A2.94 2.94 0 0 1 22 6v12a2.94 2.94 0 0 1-3 3H5a2.94 2.94 0 0 1-3-3V6a2.94 2.94 0 0 1 3-3h14m-9.54 7H7.46V19h2v-9M8.46 5.9A1.4 1.4 0 1 0 8.44 8.7 1.4 1.4 0 0 0 8.46 5.9M20 19v-5.2c0-2.77-1.48-4.06-3.46-4.06A3 3 0 0 0 14 11.29V10H12v9h2v-4.84c0-1.28.61-2.16 1.84-2.16s1.7.9 1.7 2.22V19Z"/>
+							</svg>
+						</a>
+						<a
+							href="https://mail.google.com/mail/?view=cm&fs=1&to=aditimakamxoxo@gmail.com&su=Hello%20A%20Aditi&body=Hi%20A%20Aditi%2C%0A"
+							aria-label="Send email to A Aditi"
+							title="Email"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<!-- Mail icon (unchanged) -->
+							<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4l-8 5L4 8V6l8 5 8-5z"/>
+							</svg>
+						</a>
+					</div>
+				</div>
+				<!--form class="contact-form card" action="https://formspree.io/f/your-id" method="POST">
+					<label>
+						<span>Name</span>
+						<input required name="name" type="text" placeholder="Jane Doe" />
+					</label>
+					<label>
+						<span>Email</span>
+						<input required name="email" type="email" placeholder="jane@example.com" />
+					</label>
+					<label>
+						<span>Message</span>
+						<textarea required name="message" rows="5" placeholder="Tell me about your project..."></textarea>
+					</label>
+					<button class="btn" type="submit">Send message</button>
+				</form-->
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container">
+			<p>© <span id="year"></span> A Aditi. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<script src="assets/script.js"></script>
+<script>
+	// Ensure top nav gets the "active" pill when clicking/scrolling
+	(function () {
+		const links = document.querySelectorAll('.menu .nav-link');
+		const sections = Array.from(document.querySelectorAll('main section[id]'));
+		const HEADER_OFFSET = 96;
+		function setActiveById(id){ links.forEach(a => a.classList.toggle('active', a.dataset.section === id)); }
+		function setActiveFromHash(){ const id=(location.hash||'').replace('#',''); if(id) setActiveById(id); }
+		function setActiveOnScroll(){ const pos=window.scrollY+HEADER_OFFSET; let id=''; for(const s of sections) if(pos>=s.offsetTop-1) id=s.id; setActiveById(id); }
+		links.forEach(a => { a.addEventListener('click', () => { const href=a.getAttribute('href')||''; if(href.startsWith('#')) setActiveById(href.slice(1)); }); });
+		setActiveFromHash(); setActiveOnScroll();
+		window.addEventListener('hashchange', setActiveFromHash, {passive:true});
+		window.addEventListener('scroll', setActiveOnScroll, {passive:true});
+	})();
+
+		// Theme: load preference, hook toggle, persist
+		(function(){
+			const KEY='theme';
+			const btn=document.querySelector('.theme-toggle');
+			const prefersDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+			const saved=localStorage.getItem(KEY);
+			const initial=saved || (prefersDark ? 'dark' : 'light');
+			function setTheme(t){
+				document.documentElement.setAttribute('data-theme', t);
+				localStorage.setItem(KEY, t);
+				if(btn) btn.setAttribute('aria-pressed', String(t==='dark'));
+			}
+			setTheme(initial);
+			if(btn){
+				btn.addEventListener('click', ()=>{
+					const current=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
+					setTheme(current==='dark'?'light':'dark');
+				});
+			}
+		})();
+</script>
+</body>
+</html>
